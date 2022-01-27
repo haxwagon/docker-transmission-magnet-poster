@@ -9,12 +9,15 @@ MAGNET_FOLDER=$1
 
 echo "Watching for magnets in $MAGNET_FOLDER and sending to $TRANSMISSION_URL every $PERIOD seconds..."
 while true; do
+	OIFS="$IFS"
+	IFS=$'\n'
 	for MAGNET_FILE in `find "$MAGNET_FOLDER" -iname "*.magnet"`; do
 		echo "Found magnet file: $MAGNET_FILE"
 		MAGNET_LINK=`cat $MAGNET_FILE`
 		echo "Adding magnet link: $MAGNET_LINK from $MAGNET_FILE..."
 		transmission-remote $TRANSMISSION_URL --add "$MAGNET_LINK" && rm "$MAGNET_FILE"
 	done
+	IFS="$OIFS"
 	sleep $PERIOD
 done
 
